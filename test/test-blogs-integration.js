@@ -62,14 +62,15 @@ describe("BlogPost API resource", function() {
     return closeServer();
   });
 
+  // GET
   describe("GET endpoint", function() {
+    // can you get them all
     it("should return all existing blog posts", function() {
       let res;
       return chai.request(app)
         .get("/posts")
         .then(function(_res) {
           res = _res;
-          console.log(res.body[0]);
           expect(res).to.have.status(200);
           expect(res.body).to.have.lengthOf.at.least(1);
           return BlogPost.count();
@@ -78,6 +79,39 @@ describe("BlogPost API resource", function() {
           expect(res.body).to.have.lengthOf(count);
         });
     });
-  });
 
+    // do they all match?
+    it("should return blog posts with right fields", function() {
+      let resBlogPost;
+      return chai.request(app)
+        .get("/posts")
+        .then(function(res) {
+          expect(res).to.have.status(200);
+          expect(res).to.be.json;
+          expect(res.body).to.be.a("array");
+          expect(res.body).to.have.lengthOf.at.least(1);
+
+          res.body.forEach(function(post) {
+            expect(post).to.be.a("object");
+            expect(post).to.include.keys(
+              "id",
+              "author",
+              "title",
+              "content",
+              "created"
+            );
+          });
+          resBlogPost = res.body[0];
+          return BlogPost.findById(resBlogPost.id);
+        })
+        // Compare an actual post to one in the DB
+        .then(function(post) {
+          console.log(post);
+          expect(resBlogPost.id).to.equal(post.id);
+          expect(resBlogPost.author).to.equal(post.authorName);
+          expect(resBlogPost.title).to.equal(post.title);
+          expect(resBlogPost.content).to.equal(post.content);
+        })
+    });
+  });
 });
