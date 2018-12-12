@@ -106,12 +106,42 @@ describe("BlogPost API resource", function() {
         })
         // Compare an actual post to one in the DB
         .then(function(post) {
-          console.log(post);
           expect(resBlogPost.id).to.equal(post.id);
           expect(resBlogPost.author).to.equal(post.authorName);
           expect(resBlogPost.title).to.equal(post.title);
           expect(resBlogPost.content).to.equal(post.content);
         })
+    });
+  });
+
+  describe("POST endpoint", function() {
+    it("should add a new blog post", function() {
+
+    });
+  });
+
+  describe("PUT endpoint", function() {
+    it("should update a blog post", function() {
+
+    });
+  });
+
+  describe("DELETE endpoint", function() {
+    it("should delete a blog post by id", function() {
+      let blogPost;
+
+      return BlogPost.findOne()
+        .then(function(_blogPost) {
+          blogPost = _blogPost;
+          return chai.request(app).delete(`/posts/${blogPost.id}`);
+        })
+        .then(function(res) {
+          expect(res).to.have.status(204);
+          return BlogPost.findById(blogPost.id);
+        })
+        .then(function(_blogPost) {
+          expect(_blogPost).to.be.null;
+        });
     });
   });
 });
