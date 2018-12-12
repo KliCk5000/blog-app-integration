@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 
 const chai = require("chai");
 const chaiHttp = require("chai-http");
@@ -35,7 +35,7 @@ function generateBlogData() {
     },
     title: faker.lorem.sentence(),
     content: faker.lorem.paragraphs(2)
-  }
+  };
 }
 
 // delete the database afterEach test is ran
@@ -45,7 +45,6 @@ function tearDownDb() {
 }
 
 describe("BlogPost API resource", function() {
-
   before(function() {
     return runServer(TEST_DATABASE_URL);
   });
@@ -67,7 +66,8 @@ describe("BlogPost API resource", function() {
     // can you get them all
     it("should return all existing blog posts", function() {
       let res;
-      return chai.request(app)
+      return chai
+        .request(app)
         .get("/posts")
         .then(function(_res) {
           res = _res;
@@ -83,34 +83,37 @@ describe("BlogPost API resource", function() {
     // do they all match?
     it("should return blog posts with right fields", function() {
       let resBlogPost;
-      return chai.request(app)
-        .get("/posts")
-        .then(function(res) {
-          expect(res).to.have.status(200);
-          expect(res).to.be.json;
-          expect(res.body).to.be.a("array");
-          expect(res.body).to.have.lengthOf.at.least(1);
+      return (
+        chai
+          .request(app)
+          .get("/posts")
+          .then(function(res) {
+            expect(res).to.have.status(200);
+            expect(res).to.be.json;
+            expect(res.body).to.be.a("array");
+            expect(res.body).to.have.lengthOf.at.least(1);
 
-          res.body.forEach(function(post) {
-            expect(post).to.be.a("object");
-            expect(post).to.include.keys(
-              "id",
-              "author",
-              "title",
-              "content",
-              "created"
-            );
-          });
-          resBlogPost = res.body[0];
-          return BlogPost.findById(resBlogPost.id);
-        })
-        // Compare an actual post to one in the DB
-        .then(function(post) {
-          expect(resBlogPost.id).to.equal(post.id);
-          expect(resBlogPost.author).to.equal(post.authorName);
-          expect(resBlogPost.title).to.equal(post.title);
-          expect(resBlogPost.content).to.equal(post.content);
-        })
+            res.body.forEach(function(post) {
+              expect(post).to.be.a("object");
+              expect(post).to.include.keys(
+                "id",
+                "author",
+                "title",
+                "content",
+                "created"
+              );
+            });
+            resBlogPost = res.body[0];
+            return BlogPost.findById(resBlogPost.id);
+          })
+          // Compare an actual post to one in the DB
+          .then(function(post) {
+            expect(resBlogPost.id).to.equal(post.id);
+            expect(resBlogPost.author).to.equal(post.authorName);
+            expect(resBlogPost.title).to.equal(post.title);
+            expect(resBlogPost.content).to.equal(post.content);
+          })
+      );
     });
   });
 
@@ -118,7 +121,8 @@ describe("BlogPost API resource", function() {
     it("should add a new blog post", function() {
       const newBlogPost = generateBlogData();
 
-      return chai.request(app)
+      return chai
+        .request(app)
         .post("/posts")
         .send(newBlogPost)
         .then(function(res) {
@@ -146,7 +150,27 @@ describe("BlogPost API resource", function() {
 
   describe("PUT endpoint", function() {
     it("should update a blog post", function() {
+      const updateData = {
+        title: "How to dive with sharks",
+        content: "Pray"
+      };
+      return BlogPost.findOne()
+        .then(function(post) {
+          updateData.id = post.id;
 
+          return chai
+            .request(app)
+            .put(`/posts/${post.id}`)
+            .send(updateData);
+        })
+        .then(function(res) {
+          expect(res).to.have.status(204);
+          return BlogPost.findById(updateData.id);
+        })
+        .then(function(post) {
+          expect(post.title).to.equal(updateData.title);
+          expect(post.content).to.equal(updateData.content);
+        });
     });
   });
 
