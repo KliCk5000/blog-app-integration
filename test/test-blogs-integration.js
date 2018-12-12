@@ -116,7 +116,31 @@ describe("BlogPost API resource", function() {
 
   describe("POST endpoint", function() {
     it("should add a new blog post", function() {
+      const newBlogPost = generateBlogData();
 
+      return chai.request(app)
+        .post("/posts")
+        .send(newBlogPost)
+        .then(function(res) {
+          expect(res).to.have.status(201);
+          expect(res).to.be.json;
+          expect(res.body).to.be.a("object");
+          expect(res.body).to.include.keys(
+            "id",
+            "author",
+            "title",
+            "content",
+            "created"
+          );
+          expect(res.body.id).to.not.be.null;
+          expect(res.body.title).to.equal(newBlogPost.title);
+          expect(res.body.content).to.equal(newBlogPost.content);
+          return BlogPost.findById(res.body.id);
+        })
+        .then(function(blogPost) {
+          expect(blogPost.title).to.equal(newBlogPost.title);
+          expect(blogPost.content).to.equal(newBlogPost.content);
+        });
     });
   });
 
