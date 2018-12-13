@@ -1,5 +1,11 @@
 language: node_js
 node_js: node
 services:
-  - mongodb
- 
+- mongodb
+deploy:
+  provider: heroku
+  api_key:
+    secure: J2aNGtkBmWzcPZ8t9XRtyOjuu9HiBtTuFuMpZAfSOWVk5TZRgv276oioNoNZqL2vipZI/QH9o7YA8seiOG/FIdh02jcilf0F6atx+EIQ1fWYYqM/MxDMVU4abadSjCkHoNeT8/gNnJlvSuIKc7BXo7Chjx3Tb/pNsJGWN7Gd50rM+7pZSL+/oOjnOYnjSB5k21AzZ79K8h1HOop4NHVWu7yYeXoLsnRUl3EE2FTVcGRUtyAWCeNP2V8HC3/e1d4U0TVYckpWjOQ4kddaEd2soZPTsi0J8kGF1eRw6+4MG/R+phe0l1h1N3JmcyqHPQ+fJl2/owrtYWdvR5yXkN1Xu3pEvaaeoRx13c3KIdg90vAlrHTSruZ/vyNhJ5l+/zaHSq1B9PFQ63v5v95K36cTAGGW6rdy95E90/3Uhmev9IJ9GGj/6EXwjSvxFR13EzcxqRQNwGgivsM8c5y7eOsML2EqbqqlLiZ8MGgeXL4fxm/Wf/qv5TwkgkGJBYE3l1/gtuEIIsbA4DEeLu+sGMlS3AUBU+zYKSpErNj0e14R8bKxv62d5RncBMo3ThcfDk4ZyU/tbjZP7vXSdECgSspm+8jeMByXoL36xpBz1WTTQYRDFB8IRAkwFOxiE6yaxy+Z7SZ4vJcd4lEKiqcp9VTnosI61/3dMe2+DkuFR2ajYMQ=
+  app: fierce-anchorage-66839
+  on:
+    repo: KliCk5000/blog-app-integration
